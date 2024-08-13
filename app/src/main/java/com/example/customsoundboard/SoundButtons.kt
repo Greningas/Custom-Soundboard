@@ -9,19 +9,22 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 data class ButtonConfig(val text: String, val soundResId: Int, val color: Color = Color.Blue)
 
 @Composable
 fun SoundButton(text: String, soundResId: Int, color: Color, playSound: (Int) -> Unit) {
     Button(
-        onClick = { playSound(soundResId) },
-        modifier = Modifier.fillMaxWidth(), // Make buttons fill width
-        colors = ButtonDefaults.buttonColors(
-            containerColor = color,
-            contentColor = Color.White
-        )
+        onClick = { playSound(soundResId) }, // Call playSound with the resource ID
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = color)
     ) {
-        Text(text)
+        Text(text = text, fontSize = 18.sp, fontWeight = FontWeight.Bold)
     }
 }

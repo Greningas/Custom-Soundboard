@@ -9,8 +9,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.foundation.background
+import androidx.compose.runtime.*import androidx.compose.foundation.background
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,15 +21,18 @@ import androidx.activity.OnBackPressedCallback
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 
 class MainActivity : ComponentActivity() {
-    private lateinit var mediaPlayer: MediaPlayer
+    private var mediaPlayer: MediaPlayer? = null
+    private val mediaPlayerResources = HashMap<MediaPlayer, Int>() //
     private var lastBackPressedTime: Long = 0
-    private val backPressThreshold = 2000  // 2 seconds threshold
+    private val backPressThreshold = 2000
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,34 +43,39 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        // Register the callback for the back button
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 val currentTime = System.currentTimeMillis()
                 if (currentTime - lastBackPressedTime < backPressThreshold) {
-                    finish()  // Close the activity (and app)
+                    finish()
                 } else {
                     lastBackPressedTime = currentTime
-                    Toast.makeText(this@MainActivity, "Na stole stała misa...", Toast.LENGTH_SHORT).show()
-                }
+                    Toast.makeText(this@MainActivity, "Na stole stała misa...", Toast.LENGTH_SHORT).show()}
             }
         })
     }
 
     private fun playSound(soundResId: Int) {
-        if (this::mediaPlayer.isInitialized && mediaPlayer.isPlaying) {
-            mediaPlayer.stop()
-            mediaPlayer.release()
+        val currentPlayer = mediaPlayer
+        if (currentPlayer?.isPlaying == true && mediaPlayerResources[currentPlayer] == soundResId) {
+            // Same sound is playing, stop it
+            currentPlayer.stop()
+            currentPlayer.release()
+            mediaPlayer = null
+            mediaPlayerResources.remove(currentPlayer)
+        } else {// Play the new sound
+            mediaPlayer?.release()
+            mediaPlayerResources.remove(mediaPlayer) // Remove old mapping
+            mediaPlayer = MediaPlayer.create(this, soundResId).apply {
+                mediaPlayerResources[this] = soundResId // Store new mapping
+                start()
+            }
         }
-        mediaPlayer = MediaPlayer.create(this, soundResId)
-        mediaPlayer.start()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        if (this::mediaPlayer.isInitialized) {
-            mediaPlayer.release()
-        }
+        mediaPlayer?.release()
     }
 }
 
@@ -127,22 +134,34 @@ fun SoundboardScreen(playSound: (Int) -> Unit) {
 
     Scaffold(modifier = Modifier.fillMaxSize(),
         floatingActionButton = {
-            FloatingActionButton(onClick = { /* TODO: Implement add sound functionality */ }) {
+            FloatingActionButton(onClick = { /* TODO */ }) {
                 Icon(imageVector = Icons.Filled.Add, contentDescription = "Add Sound")
             }
         }
     ) { innerPadding ->
-        LazyColumn(
+        Row(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.DarkGray)
-                .padding(innerPadding),
-            verticalArrangement = Arrangement.spacedBy(8.dp), // Adjust spacing between items
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(innerPadding)
         ) {
-            items(buttonConfigs.size) { index ->
-                val config = buttonConfigs[index]
-                SoundButton(config.text, config.soundResId, config.color, playSound)
+            IconButton(onClick = { /* TODO */ },
+                modifier = Modifier.padding(8.dp)
+            ) {
+                Icon(imageVector = Icons.Filled.Menu, contentDescription = "Menu")
+            }
+
+            LazyColumn(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                items(buttonConfigs.size) { index ->
+                    val config = buttonConfigs[index]
+                    SoundButton(config.text, config.soundResId, config.color, playSound)
+                }
             }
         }
     }
