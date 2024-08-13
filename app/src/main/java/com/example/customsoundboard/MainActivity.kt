@@ -100,7 +100,10 @@ fun GreetingScreen(onContinue: () -> Unit) {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "Welcome to the Soundboard!",
+            text = "Polskie kurwy, w przemówieniu mym, chciałbym wam powiedzieć że, Polska to jebana dzicz, a polacy to smiecie i kurwy." +
+                    "Jak mówił Jan Paweł Drugi Papież, z Rosjanami wypije, z Żydem pohandluje, ale na polaków pluję." +
+                    "Moi rodzice to komuniści i jestem z tego dumny, że dziadek, razem z Janem Pawłem rozstrzelał polaków na wołyniu, a na zakończenie" +
+                    "chuj wam w dupę.!",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold
         )
