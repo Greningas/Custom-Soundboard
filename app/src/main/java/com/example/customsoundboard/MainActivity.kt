@@ -19,6 +19,8 @@ import androidx.compose.ui.unit.sp
 import com.example.customsoundboard.ui.theme.CUstomSoundboardTheme
 import androidx.activity.OnBackPressedCallback
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
@@ -114,6 +116,7 @@ fun GreetingScreen(onContinue: () -> Unit) {
 fun SoundboardScreen(playSound: (Int) -> Unit) {
     val buttonConfigs = listOf(
         ButtonConfig("Zle but glosno", R.raw.wrong, Color.Red),
+        ButtonConfig("Dobrze ding", R.raw.correct, Color.Green),
         ButtonConfig("Suck", R.raw.parrot),
         ButtonConfig("Gorp", R.raw.gorp),
         ButtonConfig("Tomek do wozu", R.raw.tomek),
@@ -130,9 +133,9 @@ fun SoundboardScreen(playSound: (Int) -> Unit) {
         ButtonConfig("Takie zero", R.raw.mati_i_domino),
         ButtonConfig("Bird", R.raw.bird_screaming_meme),
         ButtonConfig("Randy", R.raw.niggers),
-        ButtonConfig("Suck", R.raw.parrot),
-        ButtonConfig("Suck", R.raw.parrot),
-        ButtonConfig("Suck", R.raw.parrot),
+        ButtonConfig("Spock 1", R.raw.kurwa_spock_1),
+        ButtonConfig("Spock 2", R.raw.kurwa_spock_2),
+        ButtonConfig("Plecy", R.raw.dobry_sprzet),
     )
 
     Scaffold(modifier = Modifier.fillMaxSize(),
@@ -154,7 +157,7 @@ fun SoundboardScreen(playSound: (Int) -> Unit) {
                 Icon(imageVector = Icons.Filled.Menu, contentDescription = "Menu")
             }
 
-            LazyColumn(
+          /* LazyColumn(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxSize(),
@@ -162,6 +165,18 @@ fun SoundboardScreen(playSound: (Int) -> Unit) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 items(buttonConfigs.size) { index ->
+                    val config = buttonConfigs[index]
+                    SoundButton(config.text, config.soundResId, config.color, playSound) */
+
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(2), // Set 2 columns
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(buttonConfigs.size) { index -> // Directly iterate over buttonConfigs
                     val config = buttonConfigs[index]
                     SoundButton(config.text, config.soundResId, config.color, playSound)
                 }

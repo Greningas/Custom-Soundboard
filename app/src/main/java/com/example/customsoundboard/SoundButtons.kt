@@ -1,6 +1,7 @@
 package com.example.customsoundboard
 
 
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.ui.graphics.Color
 
 import androidx.compose.material3.Button
@@ -22,6 +23,7 @@ fun SoundButton(text: String, soundResId: Int, color: Color, playSound: (Int) ->
         onClick = { playSound(soundResId) }, // Call playSound with the resource ID
         modifier = Modifier
             .fillMaxWidth()
+            .aspectRatio(2f)
             .padding(8.dp),
         colors = ButtonDefaults.buttonColors(containerColor = color)
     ) {
